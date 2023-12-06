@@ -44,14 +44,15 @@ This function should only modify configuration layer settings."
      emacs-lisp
      git
      helm
-     ;; lsp
+     lsp
      ;; markdown
      multiple-cursors
      ;; org
-     ;; (shell :variables
-     ;;        shell-default-height 30
-     ;;        shell-default-position 'bottom)
-     ;; spell-checking
+     (shell :variables
+            shell-default-height 30
+            shell-default-term-shell "C:/Windows/system32/WindowsPowerShell/v1.0/powershell.exe"
+            shell-default-position 'bottom)
+     spell-checking
      ;; syntax-checking
      ;; version-control
      treemacs)
@@ -577,6 +578,7 @@ before packages are loaded."
   (global-set-key (kbd "C->") 'mc/mark-next-like-this)
   (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
   (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+  (global-set-key (kbd "C-`") 'shell)
   (global-set-key (kbd "M-<up>") 'drag-stuff-up)
   (global-set-key (kbd "M-<down>") 'drag-stuff-down)
 )
@@ -597,7 +599,7 @@ This function is called at the very end of Spacemacs initialization."
  '(custom-safe-themes
    '("7b168f1ba5df483efdc7892f29fe9c5698891541b7aa2195171d71920e76f39b" "f3f7f6d6b08c01b78ee82bc864be47fbfbb15f15382c4f5f458666166c51fbe5" "e0b5e1641b936116007cd9764d96bf8df09cb88341af2d8cc5675e62b283d0c6" default))
  '(package-selected-packages
-   '(git-link git-messenger git-modes git-timemachine gitignore-templates helm-git-grep helm-ls-git smeargle treemacs-magit magit magit-section git-commit with-editor transient seq tern tide markdown-mode company-web web-completion-data counsel-css counsel swiper ivy helm-css-scss impatient-mode htmlize simple-httpd prettier-js pug-mode sass-mode haml-mode scss-mode slim-mode tagedit web-beautify add-node-modules-path company emmet-mode import-js grizzl typescript-mode web-mode yasnippet ws-butler writeroom-mode winum which-key volatile-highlights vim-powerline vi-tilde-fringe uuidgen undo-tree treemacs-projectile treemacs-persp treemacs-icons-dired toc-org term-cursor symon symbol-overlay string-inflection string-edit-at-point spacemacs-whitespace-cleanup spacemacs-purpose-popwin spaceline space-doc restart-emacs request rainbow-delimiters quickrun popwin pcre2el password-generator paradox overseer org-superstar open-junk-file nameless multi-line macrostep lorem-ipsum link-hint inspector info+ indent-guide hybrid-mode hungry-delete holy-mode hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org helm-mode-manager helm-make helm-descbinds helm-comint helm-ag google-translate golden-ratio flycheck-package flycheck-elsa flx-ido fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-evilified-state evil-escape evil-collection evil-cleverparens evil-args evil-anzu eval-sexp-fu emr elisp-slime-nav elisp-def editorconfig dumb-jump drag-stuff dotenv-mode dired-quick-sort diminish devdocs define-word column-enforce-mode clean-aindent-mode centered-cursor-mode auto-highlight-symbol auto-compile all-the-icons aggressive-indent ace-link ace-jump-helm-line)))
+   '(auto-dictionary esh-help eshell-prompt-extras eshell-z flycheck-pos-tip pos-tip flyspell-correct-helm flyspell-correct helm-c-yasnippet helm-company helm-lsp lsp-origami origami lsp-treemacs lsp-ui lsp-mode multi-term shell-pop terminal-here xterm-color yasnippet-snippets git-link git-messenger git-modes git-timemachine gitignore-templates helm-git-grep helm-ls-git smeargle treemacs-magit magit magit-section git-commit with-editor transient seq tern tide markdown-mode company-web web-completion-data counsel-css counsel swiper ivy helm-css-scss impatient-mode htmlize simple-httpd prettier-js pug-mode sass-mode haml-mode scss-mode slim-mode tagedit web-beautify add-node-modules-path company emmet-mode import-js grizzl typescript-mode web-mode yasnippet ws-butler writeroom-mode winum which-key volatile-highlights vim-powerline vi-tilde-fringe uuidgen undo-tree treemacs-projectile treemacs-persp treemacs-icons-dired toc-org term-cursor symon symbol-overlay string-inflection string-edit-at-point spacemacs-whitespace-cleanup spacemacs-purpose-popwin spaceline space-doc restart-emacs request rainbow-delimiters quickrun popwin pcre2el password-generator paradox overseer org-superstar open-junk-file nameless multi-line macrostep lorem-ipsum link-hint inspector info+ indent-guide hybrid-mode hungry-delete holy-mode hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org helm-mode-manager helm-make helm-descbinds helm-comint helm-ag google-translate golden-ratio flycheck-package flycheck-elsa flx-ido fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-evilified-state evil-escape evil-collection evil-cleverparens evil-args evil-anzu eval-sexp-fu emr elisp-slime-nav elisp-def editorconfig dumb-jump drag-stuff dotenv-mode dired-quick-sort diminish devdocs define-word column-enforce-mode clean-aindent-mode centered-cursor-mode auto-highlight-symbol auto-compile all-the-icons aggressive-indent ace-link ace-jump-helm-line)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

@@ -50,12 +50,13 @@
 ***** 注释当前行 [C-x C-;][M-m c-KEY]
 ***** 行尾添加注释 [M-;]
 **** 代码跳转
-**** magit
+**** magit [[https://develop.spacemacs.org/layers/+source-control/git/README.html][git layer]]
 ***** 配置: .spacemacs => dotspacemacs-configuration-layer 添加 `git` layer
 ***** git 相关操作键位 [M-m g KEY]
 ****** open magit status window [M-m g s]
-****** stage all files [S]
+****** stage all files [s]
 ****** open a commit message buffer [c c]
+****** finish message input [C-c C-c]
 ****** push to tracked branch [P u]
 ***** 初始化仓库信息/分支/提交流程...
 
