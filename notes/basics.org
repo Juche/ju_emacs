@@ -4,6 +4,12 @@
 
 *** 软件
 **** 关闭 Emacs [C-x C-c]
+**** 重新打开还原之前的界面: 安装 session 包 =package-install session=
+    #+BEGIN_SRC elisp
+    (require 'session)
+    (add-hook 'after-init-hook 'session-initialize)
+    (desktop-save-mode t)
+    #+END_SRC
 
 *** 项目
 **** 切换项目 [M-m p p]
@@ -33,9 +39,12 @@
 **** 剪切 [C-w]
 **** 粘贴 [C-y][M-y]
 **** 删除至行尾 [C-k]
-**** 删除行 [C-S-<Backspace>]
+**** 删除行 [C-shift-<Backspace>]
+**** 移动相关的键 [C-f/b/e/a/n/p] [M-f/b/e/a/>/<]
+**** 当前行在窗口中/顶/底部切换 [C-l]
 **** 文件顶部 [C-<]
 **** 文件底部 [C->]
+**** 移动到指定行 [M-g g]
 
 *** 查找替换
 **** [C-s][C-shift-s]
@@ -70,7 +79,10 @@
 *** 创建TODO项 [C-Shift-Enter]
 *** 移动列表项 [M-上下方向键]
 *** 交换临近列表项排序 [M-shift-方向键]
+*** 调整标题层级 [M-左/右方向键]
 *** 切换列表项状态 [shift-左/右方向键]
+*** S+Tab 展开、折叠所有章节
+*** Tab 对光标所在章节进行展开、折叠
 
 ** .spacemacs 配置文件
 *** 打开配置文件 [M-m f e d]
@@ -79,3 +91,48 @@
 *** 显示行号(nil/visual/relative)
 **** 相对行号 [display-line-numbers-mode 'relative]
 **** 可视化行号 [display-line-numbers-mode 'visual]
+
+** .spacemacs.env
+
+*** Windows 系统设置终端 =COMSPEC=C:\Program Files\WindowsApps\Microsoft.PowerShell_7.4.0.0_x64__8wekyb3d8bbwe\pwsh.exe=
+
+** 帮助文件
+
+*** 变量帮助信息 [C-h v]
+*** 函数帮助信息 [C-h f]
+
+** 其他
+*** Lisp 交互式解释器 [https://learnxinyminutes.com/docs/elisp/]
+**** 打开 Lisp 交互式解释器 lisp-interaction-mode
+**** 执行代码(光标须在代码尾部) [C-j]
+
+** TODO
+
+*** emacs 默认快捷键配置文件查看
+*** 快捷键配置 => 尽量向系统常规操作一致
+*** 设置Leader键
+*** C-S-Enter 在上面插入一行
+*** Org 使用
+**** 导出 PDF (安装 LaTex)
+*** 配色主题
+**** tsdh-dark
+**** monokai
+**** farmhouse-dark
+**** doom-dra
+*** 重新打开还原之前的界面 session
+*** 去除滚动条
+*** 格式化问题
+*** 修复 Flyspell 等插件报错的问题
+*** treemacs 样式优化
+*** spacemacs 启动页面优化
+**** 更换图标 https://github.com/willbchang/emacs-dragon-icon/tree/main
+**** 图标素材下载 https://icon-icons.com/
+*** TODO fork spacemacs 维护自己的定制版本
+*** 搜索相关 => 文件/项目
+
+M-x all-the-icons-install-fonts
+# raw.githubusercontent.com
+185.199.108.133       raw.githubusercontent.com
+185.199.109.133       raw.githubusercontent.com
+185.199.110.133       raw.githubusercontent.com
+185.199.111.133       raw.githubusercontent.com

@@ -39,8 +39,8 @@ This function should only modify configuration layer settings."
      ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
      ;; `M-m f e R' (Emacs style) to install them.
      ;; ----------------------------------------------------------------
-     ; auto-completion
-     ;; better-defaults
+     auto-completion
+     better-defaults
      emacs-lisp
      git
      helm
@@ -48,14 +48,20 @@ This function should only modify configuration layer settings."
      ;; markdown
      multiple-cursors
      ;; org
+     ;; shell-default-term-shell "C:/Windows/system32/WindowsPowerShell/v1.0/powershell.exe"
      (shell :variables
             shell-default-height 30
-            shell-default-term-shell "C:/Windows/system32/WindowsPowerShell/v1.0/powershell.exe"
             shell-default-position 'bottom)
      spell-checking
-     ;; syntax-checking
+     syntax-checking
+     ;; flyspell
+     ;; session
+     ;; (all-the-icons :if (display-graphic-p))
      ;; version-control
-     treemacs)
+     ;; treemacs
+     (treemacs :variables treemacs-use-all-the-icons-theme t)
+     (treemacs :variables treemacs-use-git-mode 'deferred)
+     )
 
 
    ;; List of additional packages that will be installed without being wrapped
@@ -167,7 +173,7 @@ It should only modify the values of Spacemacs settings."
    ;; with `:variables' keyword (similar to layers). Check the editing styles
    ;; section of the documentation for details on available variables.
    ;; (default 'vim)
-   dotspacemacs-editing-style 'emacs
+   dotspacemacs-editing-style 'hybrid
 
    ;; If non-nil show the version string in the Spacemacs buffer. It will
    ;; appear as (spacemacs version)@(emacs version)
@@ -239,7 +245,9 @@ It should only modify the values of Spacemacs settings."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press `SPC T n' to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(spacemacs-dark
+   dotspacemacs-themes '(doom-monokai-octagon
+                         doom-dracula
+                         spacemacs-dark
                          spacemacs-light)
 
    ;; Set the theme for the Spaceline. Supported themes are `spacemacs',
@@ -249,7 +257,7 @@ It should only modify the values of Spacemacs settings."
    ;; refer to the DOCUMENTATION.org for more info on how to create your own
    ;; spaceline theme. Value can be a symbol or list with additional properties.
    ;; (default '(spacemacs :separator wave :separator-scale 1.5))
-   dotspacemacs-mode-line-theme '(spacemacs :separator wave :separator-scale 1.5)
+   dotspacemacs-mode-line-theme '(doom :separator wave :separator-scale 1.5)
 
    ;; If non-nil the cursor color matches the state color in GUI Emacs.
    ;; (default t)
@@ -258,7 +266,8 @@ It should only modify the values of Spacemacs settings."
    ;; Default font or prioritized list of fonts. The `:size' can be specified as
    ;; a non-negative integer (pixel size), or a floating-point (point size).
    ;; Point size is recommended, because it's device independent. (default 10.0)
-   dotspacemacs-default-font '("Source Code Pro"
+   ;; Source Code Pro/FiraCode Nerd Font/Fira Code/Cascadia Code/Cascadia Mono/CaskaydiaCove Nerd Font/BankGothic JuBst
+   dotspacemacs-default-font '("Cascadia Code"
                                :size 12.0
                                :weight normal
                                :width normal)
@@ -424,10 +433,6 @@ It should only modify the values of Spacemacs settings."
    ;; (default nil)
    dotspacemacs-line-numbers 'relative
 
-   ;; code format
-   default-tab-width 2
-   indent-tabs-mode nil
-
    ;; Code folding method. Possible values are `evil', `origami' and `vimish'.
    ;; (default 'evil)
    dotspacemacs-folding-method 'evil
@@ -540,7 +545,18 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-home-shorten-agenda-source nil
 
    ;; If non-nil then byte-compile some of Spacemacs files.
-   dotspacemacs-byte-compile nil))
+   dotspacemacs-byte-compile nil
+
+   ;; code format
+   default-tab-width 2
+   indent-tabs-mode nil
+   ;; 隐藏滚动条
+   ;; scroll-bar-mode nil
+   ;; session
+   ;;desktop-save-mode t
+   ;; flyspell-mode t
+
+   ))
 
 (defun dotspacemacs/user-env ()
   "Environment variables setup.
@@ -574,13 +590,36 @@ This function is called at the very end of Spacemacs startup, after layer
 configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
+  ;; 多光标操作 multiple-cursors
   (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
   (global-set-key (kbd "C->") 'mc/mark-next-like-this)
   (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
   (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+  (global-unset-key (kbd "C-<down-mouse-1>"))
+  (global-set-key (kbd "C-<mouse-1>") 'mc/add-cursor-on-click)
+  ;; 打开终端
   (global-set-key (kbd "C-`") 'shell)
+  ;; 交换上下行位置
   (global-set-key (kbd "M-<up>") 'drag-stuff-up)
   (global-set-key (kbd "M-<down>") 'drag-stuff-down)
+
+  ;; 缓存打开的文件(未生效)
+  ;;(use-package session)
+  ;; (add-hook 'after-init-hook 'session-initialize 'doom-modeline-mode)
+  (add-hook 'after-init-hook 'doom-modeline-mode)
+  (add-hook 'text-mode-hook 'flyspell-mode)
+  (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+
+  ;; (desktop-save-mode t)
+  (use-package doom-modeline
+    :ensure t
+    :init (doom-modeline-mode 1))
+  (use-package all-the-icons
+    :if (display-graphic-p))
+
+  ;; org-mode 自动折行
+  (add-hook 'org-mode-hook (lambda () (setq truncate-lines nil)))
+
 )
 
 
@@ -599,7 +638,7 @@ This function is called at the very end of Spacemacs initialization."
  '(custom-safe-themes
    '("7b168f1ba5df483efdc7892f29fe9c5698891541b7aa2195171d71920e76f39b" "f3f7f6d6b08c01b78ee82bc864be47fbfbb15f15382c4f5f458666166c51fbe5" "e0b5e1641b936116007cd9764d96bf8df09cb88341af2d8cc5675e62b283d0c6" default))
  '(package-selected-packages
-   '(auto-dictionary esh-help eshell-prompt-extras eshell-z flycheck-pos-tip pos-tip flyspell-correct-helm flyspell-correct helm-c-yasnippet helm-company helm-lsp lsp-origami origami lsp-treemacs lsp-ui lsp-mode multi-term shell-pop terminal-here xterm-color yasnippet-snippets git-link git-messenger git-modes git-timemachine gitignore-templates helm-git-grep helm-ls-git smeargle treemacs-magit magit magit-section git-commit with-editor transient seq tern tide markdown-mode company-web web-completion-data counsel-css counsel swiper ivy helm-css-scss impatient-mode htmlize simple-httpd prettier-js pug-mode sass-mode haml-mode scss-mode slim-mode tagedit web-beautify add-node-modules-path company emmet-mode import-js grizzl typescript-mode web-mode yasnippet ws-butler writeroom-mode winum which-key volatile-highlights vim-powerline vi-tilde-fringe uuidgen undo-tree treemacs-projectile treemacs-persp treemacs-icons-dired toc-org term-cursor symon symbol-overlay string-inflection string-edit-at-point spacemacs-whitespace-cleanup spacemacs-purpose-popwin spaceline space-doc restart-emacs request rainbow-delimiters quickrun popwin pcre2el password-generator paradox overseer org-superstar open-junk-file nameless multi-line macrostep lorem-ipsum link-hint inspector info+ indent-guide hybrid-mode hungry-delete holy-mode hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org helm-mode-manager helm-make helm-descbinds helm-comint helm-ag google-translate golden-ratio flycheck-package flycheck-elsa flx-ido fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-evilified-state evil-escape evil-collection evil-cleverparens evil-args evil-anzu eval-sexp-fu emr elisp-slime-nav elisp-def editorconfig dumb-jump drag-stuff dotenv-mode dired-quick-sort diminish devdocs define-word column-enforce-mode clean-aindent-mode centered-cursor-mode auto-highlight-symbol auto-compile all-the-icons aggressive-indent ace-link ace-jump-helm-line)))
+   '(treemacs-all-the-icons doom-modeline shrink-path nerd-icons evil-easymotion treemacs-evil session mwim unfill auto-dictionary esh-help eshell-prompt-extras eshell-z flycheck-pos-tip pos-tip flyspell-correct-helm flyspell-correct helm-c-yasnippet helm-company helm-lsp lsp-origami origami lsp-treemacs lsp-ui lsp-mode multi-term shell-pop terminal-here xterm-color yasnippet-snippets git-link git-messenger git-modes git-timemachine gitignore-templates helm-git-grep helm-ls-git smeargle treemacs-magit magit magit-section git-commit with-editor transient seq tern tide markdown-mode company-web web-completion-data counsel-css counsel swiper ivy helm-css-scss impatient-mode htmlize simple-httpd prettier-js pug-mode sass-mode haml-mode scss-mode slim-mode tagedit web-beautify add-node-modules-path company emmet-mode import-js grizzl typescript-mode web-mode yasnippet ws-butler writeroom-mode winum which-key volatile-highlights vim-powerline vi-tilde-fringe uuidgen undo-tree treemacs-projectile treemacs-persp treemacs-icons-dired toc-org term-cursor symon symbol-overlay string-inflection string-edit-at-point spacemacs-whitespace-cleanup spacemacs-purpose-popwin spaceline space-doc restart-emacs request rainbow-delimiters quickrun popwin pcre2el password-generator paradox overseer org-superstar open-junk-file nameless multi-line macrostep lorem-ipsum link-hint inspector info+ indent-guide hybrid-mode hungry-delete holy-mode hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org helm-mode-manager helm-make helm-descbinds helm-comint helm-ag google-translate golden-ratio flycheck-package flycheck-elsa flx-ido fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-evilified-state evil-escape evil-collection evil-cleverparens evil-args evil-anzu eval-sexp-fu emr elisp-slime-nav elisp-def editorconfig dumb-jump drag-stuff dotenv-mode dired-quick-sort diminish devdocs define-word column-enforce-mode clean-aindent-mode centered-cursor-mode auto-highlight-symbol auto-compile all-the-icons aggressive-indent ace-link ace-jump-helm-line)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
