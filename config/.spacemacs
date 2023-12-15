@@ -173,7 +173,7 @@ It should only modify the values of Spacemacs settings."
    ;; with `:variables' keyword (similar to layers). Check the editing styles
    ;; section of the documentation for details on available variables.
    ;; (default 'vim)
-   dotspacemacs-editing-style 'hybrid
+   dotspacemacs-editing-style 'emacs
 
    ;; If non-nil show the version string in the Spacemacs buffer. It will
    ;; appear as (spacemacs version)@(emacs version)
@@ -245,10 +245,12 @@ It should only modify the values of Spacemacs settings."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press `SPC T n' to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
+                         ;; spacemacs-dark
+                         ;; spacemacs-light
+                         ;; Ju-monokai-octagon
    dotspacemacs-themes '(doom-monokai-octagon
                          doom-dracula
-                         spacemacs-dark
-                         spacemacs-light)
+                         )
 
    ;; Set the theme for the Spaceline. Supported themes are `spacemacs',
    ;; `all-the-icons', `custom', `doom', `vim-powerline' and `vanilla'. The
@@ -555,6 +557,7 @@ It should only modify the values of Spacemacs settings."
    ;; session
    ;;desktop-save-mode t
    ;; flyspell-mode t
+   delete-selection-mode t  ; 选中文本后输入文本会替换文本
 
    ))
 
@@ -565,7 +568,7 @@ default it calls `spacemacs/load-spacemacs-env' which loads the environment
 variables declared in `~/.spacemacs.env' or `~/.spacemacs.d/.spacemacs.env'.
 See the header of this file for more information."
   (spacemacs/load-spacemacs-env)
-)
+  )
 
 (defun dotspacemacs/user-init ()
   "Initialization for user code:
@@ -573,7 +576,7 @@ This function is called immediately after `dotspacemacs/init', before layer
 configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
-)
+  )
 
 
 (defun dotspacemacs/user-load ()
@@ -581,7 +584,7 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
 This function is called only while dumping Spacemacs configuration. You can
 `require' or `load' the libraries of your choice that will be included in the
 dump."
-)
+  )
 
 
 (defun dotspacemacs/user-config ()
@@ -590,6 +593,113 @@ This function is called at the very end of Spacemacs startup, after layer
 configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
+  ;; 图形界面下关闭滚动条
+  ;; (when (display-graphic-p) (toggle-scroll-bar -1))
+  ;; (set-scroll-bar-mode nil)
+  ;; (scroll-bar-mode -1)
+  ;; (horizontal-scroll-bar-mode -1)
+
+  ;;set transparent effect
+  (setq alpha-list '((100 100) (95 100) (90 100) (80 100) (60 100)))
+  (defun loop-alpha ()
+    (interactive)
+    (let ((h (car alpha-list)))                ;; head value will set to
+      ((lambda (a ab)
+         (set-frame-parameter (selected-frame) 'alpha (list a ab))
+         (add-to-list 'default-frame-alist (cons 'alpha (list a ab)))
+         ) (car h) (car (cdr h)))
+      (setq alpha-list (cdr (append alpha-list (list h))))
+      )
+    )
+  (global-set-key [(f12)] 'loop-alpha)
+  (set-frame-parameter (selected-frame) 'alpha (list 95 100)) 
+
+  ;; 在当前光标下一行插入空行
+  (defun open-newline-below ()
+    ;; "Like vi o command"
+    (interactive)
+    (end-of-line)
+    (newline-and-indent))
+
+  ;; 在当前光标上一行插入空行
+  (defun open-newline-above ()
+    ;; "Like vi O command"
+    (interactive)
+    (beginning-of-line)
+    (newline-and-indent)
+    (previous-line)
+    (indent-according-to-mode))
+
+  (global-set-key (kbd "C-<return>") 'open-newline-below)
+  (global-set-key (kbd "C-S-<return>") 'open-newline-above)
+
+  ;; 复制优化
+  ;; Smart copy, if no region active, it simply copy the current whole line
+  (defadvice kill-line (before check-position activate)
+    (if (member major-mode
+                '(emacs-lisp-mode scheme-mode lisp-mode
+                                  c-mode c++-mode objc-mode js-mode
+                                  latex-mode plain-tex-mode))
+        (if (and (eolp) (not (bolp)))
+            (progn (forward-char 1)
+                   (just-one-space 0)
+                   (backward-char 1)))))
+
+  (defadvice kill-ring-save (before slick-copy activate compile)
+    "When called interactively with no active region, copy a single line instead."
+    (interactive (if mark-active (list (region-beginning) (region-end))
+                   (message "Copied line")
+                   (list (line-beginning-position)
+                         (line-end-position)))))
+
+  (defadvice kill-region (before slick-cut activate compile)
+    "When called interactively with no active region, kill a single line instead."
+    (interactive
+     (if mark-active (list (region-beginning) (region-end))
+       (list (line-beginning-position)
+             (line-end-position)))))
+
+  ;; Copy line from point to the end, exclude the line break
+  (defun copy-to-line-end (arg)
+    "Copy lines (as many as prefix argument) in the kill ring"
+    (interactive "p")
+    (kill-ring-save (point)
+                    (line-end-position))
+    ;; (line-end-position (+ 1 arg)))
+    (message "%d line%s copied(from point to line end position)" arg (if (= 1 arg) "" "s")))
+
+  ;; Copy line from point to the end, exclude the line break
+  (defun copy-to-line-beginning (arg)
+    "Copy lines (as many as prefix argument) in the kill ring"
+    (interactive "p")
+    (kill-ring-save  (line-beginning-position)
+                     (point))
+    ;; (line-beginning-position (+ 1 arg)))
+    (message "%d line%s copied(from point to line beginning position)" arg (if (= 1 arg) "" "s")))
+
+  ;; 复制光标位置到行尾
+  (global-set-key (kbd "M-k") 'copy-to-line-end)
+  ;; 复制光标位置到行首
+  (global-set-key (kbd "M-K") 'copy-to-line-beginning)
+
+  ;; 粘贴优化
+  (defun paste-to-below ()
+    (interactive)
+    (end-of-line)
+    (newline-and-indent)
+    (yank))
+
+  ;; 粘贴到下一行
+  (global-set-key (kbd "C-S-y") 'paste-to-below)
+  
+  ;; 在新的窗格(window)打开终端
+  (defun open-shell-in-new-window ()
+    "Open shell in new window"
+    (interactive)
+    (other-window 1)
+    (shell))
+  (global-set-key (kbd "C-`") 'open-shell-in-new-window)
+
   ;; 多光标操作 multiple-cursors
   (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
   (global-set-key (kbd "C->") 'mc/mark-next-like-this)
@@ -597,15 +707,20 @@ before packages are loaded."
   (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
   (global-unset-key (kbd "C-<down-mouse-1>"))
   (global-set-key (kbd "C-<mouse-1>") 'mc/add-cursor-on-click)
-  ;; 打开终端
-  (global-set-key (kbd "C-`") 'shell)
   ;; 交换上下行位置
   (global-set-key (kbd "M-<up>") 'drag-stuff-up)
   (global-set-key (kbd "M-<down>") 'drag-stuff-down)
+  ;; 标记内容起始位置
+  ;; (global-set-key (kbd "C-SPC") 'set-mark-command)
+  ;; 保存文件
+  (global-set-key (kbd "C-S-s") 'save-buffer)
+  ;; 同步 emacs 配置文件生效
+  (global-set-key (kbd "C-S-r") 'dotspacemacs/sync-configuration-layers)
 
   ;; 缓存打开的文件(未生效)
   ;;(use-package session)
   ;; (add-hook 'after-init-hook 'session-initialize 'doom-modeline-mode)
+
   (add-hook 'after-init-hook 'doom-modeline-mode)
   (add-hook 'text-mode-hook 'flyspell-mode)
   (add-hook 'prog-mode-hook 'flyspell-prog-mode)
@@ -619,8 +734,10 @@ before packages are loaded."
 
   ;; org-mode 自动折行
   (add-hook 'org-mode-hook (lambda () (setq truncate-lines nil)))
+  ;; 编程模式下，可以折叠代码块
+  (add-hook 'prog-mode-hook #'hs-minor-mode)
 
-)
+  )
 
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -636,9 +753,9 @@ This function is called at the very end of Spacemacs initialization."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("7b168f1ba5df483efdc7892f29fe9c5698891541b7aa2195171d71920e76f39b" "f3f7f6d6b08c01b78ee82bc864be47fbfbb15f15382c4f5f458666166c51fbe5" "e0b5e1641b936116007cd9764d96bf8df09cb88341af2d8cc5675e62b283d0c6" default))
+   '("21ce23907bd82990c93fceccb0b831bb6e8d7548ae2d4ad1b78ca5ed77d04583" "2c16851f30fc5d4e37538e4b1b80cb94398f684ed4a85f20d7a06875fa284348" "abcb054e1b6aa88ad26888b696eade1fb9c108f12e1b99b3d6677b77b2cf6067" "a9abd706a4183711ffcca0d6da3808ec0f59be0e8336868669dc3b10381afb6f" "f676d761c0a8dd32deda87d48504c688413c61673b6dfc543f5f132c3d509877" default))
  '(package-selected-packages
-   '(treemacs-all-the-icons doom-modeline shrink-path nerd-icons evil-easymotion treemacs-evil session mwim unfill auto-dictionary esh-help eshell-prompt-extras eshell-z flycheck-pos-tip pos-tip flyspell-correct-helm flyspell-correct helm-c-yasnippet helm-company helm-lsp lsp-origami origami lsp-treemacs lsp-ui lsp-mode multi-term shell-pop terminal-here xterm-color yasnippet-snippets git-link git-messenger git-modes git-timemachine gitignore-templates helm-git-grep helm-ls-git smeargle treemacs-magit magit magit-section git-commit with-editor transient seq tern tide markdown-mode company-web web-completion-data counsel-css counsel swiper ivy helm-css-scss impatient-mode htmlize simple-httpd prettier-js pug-mode sass-mode haml-mode scss-mode slim-mode tagedit web-beautify add-node-modules-path company emmet-mode import-js grizzl typescript-mode web-mode yasnippet ws-butler writeroom-mode winum which-key volatile-highlights vim-powerline vi-tilde-fringe uuidgen undo-tree treemacs-projectile treemacs-persp treemacs-icons-dired toc-org term-cursor symon symbol-overlay string-inflection string-edit-at-point spacemacs-whitespace-cleanup spacemacs-purpose-popwin spaceline space-doc restart-emacs request rainbow-delimiters quickrun popwin pcre2el password-generator paradox overseer org-superstar open-junk-file nameless multi-line macrostep lorem-ipsum link-hint inspector info+ indent-guide hybrid-mode hungry-delete holy-mode hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org helm-mode-manager helm-make helm-descbinds helm-comint helm-ag google-translate golden-ratio flycheck-package flycheck-elsa flx-ido fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-evilified-state evil-escape evil-collection evil-cleverparens evil-args evil-anzu eval-sexp-fu emr elisp-slime-nav elisp-def editorconfig dumb-jump drag-stuff dotenv-mode dired-quick-sort diminish devdocs define-word column-enforce-mode clean-aindent-mode centered-cursor-mode auto-highlight-symbol auto-compile all-the-icons aggressive-indent ace-link ace-jump-helm-line)))
+   '(doom-themes yasnippet-snippets xterm-color ws-butler writeroom-mode winum which-key web-mode web-beautify volatile-highlights vim-powerline vi-tilde-fringe uuidgen unfill undo-tree typescript-mode treemacs-projectile treemacs-persp treemacs-magit treemacs-icons-dired treemacs-all-the-icons toc-org terminal-here term-cursor tagedit symon symbol-overlay string-inflection string-edit-at-point spacemacs-whitespace-cleanup spacemacs-purpose-popwin spaceline space-doc smeargle slim-mode shell-pop scss-mode sass-mode restart-emacs request rainbow-delimiters quickrun pug-mode prettier-js popwin pcre2el password-generator paradox overseer org-superstar open-junk-file npm-mode nodejs-repl nameless mwim multi-term multi-line macrostep lsp-ui lsp-treemacs lsp-origami lorem-ipsum livid-mode link-hint json-reformat json-navigator json-mode js2-refactor js-doc inspector info+ indent-guide impatient-mode hybrid-mode hungry-delete holy-mode hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org helm-mode-manager helm-make helm-lsp helm-ls-git helm-git-grep helm-descbinds helm-css-scss helm-company helm-comint helm-c-yasnippet helm-ag google-translate golden-ratio gitignore-templates git-timemachine git-modes git-messenger git-link flyspell-correct-helm flycheck-pos-tip flycheck-package flycheck-elsa flx-ido fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-evilified-state evil-escape evil-collection evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emr emmet-mode elisp-slime-nav elisp-def editorconfig dumb-jump drag-stuff dotenv-mode doom-modeline dired-quick-sort diminish devdocs define-word company-web column-enforce-mode clean-aindent-mode centered-cursor-mode auto-highlight-symbol auto-dictionary auto-compile aggressive-indent ace-link ace-jump-helm-line)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

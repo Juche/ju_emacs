@@ -13,7 +13,7 @@
 
 *** 项目
 **** 切换项目 [M-m p p]
-**** treemacs侧边菜单 [M-m p t]
+**** treemacs侧边菜单 [M-m 0][M-m p t]
 **** 在项目中查找文件 [M-m p f]
 
 *** 窗口
@@ -23,6 +23,9 @@
 ***** 垂直窗口 [C-x 3]
 ***** 关闭窗口 [C-x 0]
 ***** 最大化窗口 [C-x 1]
+**** tab 标签页(ace-window)
+***** 新建标签页 [C-x t 2]
+***** 切换标签页 [C-x t o/O]
 
 *** 文件
 **** 打开文件 [C-x C-f]
@@ -34,27 +37,36 @@
 ***** buffer目录选择[C-x C-j]
 
 *** 文本
+**** 交换行 [M-m x J/K] => j(down)/k(up)/h(left)/l(right)
+**** 交换行 [M-up/down]
+**** 交换字符 [C-t]
+**** 交换单词 [M-t]
+**** 添加新空行 [C-o]
+**** 去除周围空行 [C-x C-o]
+**** 大小写切换 [M-u][M-l] 首字母大写 [M-c]
 **** 撤销操作 [C-/][C-shift-/]
+**** 操作历史记录(undo-tree)
+***** 打开历史记录可视化视图 [M-m a u]
+**** 标记内容起始位置 [C-@][C-x C-x][C-SPC]
 **** 复制 [M-w]
 **** 剪切 [C-w]
 **** 粘贴 [C-y][M-y]
 **** 删除至行尾 [C-k]
 **** 删除行 [C-shift-<Backspace>]
-**** 移动相关的键 [C-f/b/e/a/n/p] [M-f/b/e/a/>/<]
+**** 移动相关的键 [C-f/b/e/a/n/p][M-f/b/e/a/>/<]
 **** 当前行在窗口中/顶/底部切换 [C-l]
 **** 文件顶部 [C-<]
 **** 文件底部 [C->]
 **** 移动到指定行 [M-g g]
+**** 命令重复次数 [C-数字 命令][C-u 数字 命令]
 
 *** 查找替换
-**** [C-s][C-shift-s]
-**** [M-x replace-string]
+**** [C-s][C-r]
+**** [M-%][M-x replace-string]
 
 *** 代码
 **** 缩进 [M-i][M-m x Tab]
-**** 交换行 [M-m x J/K] => j(down)/k(up)/h(left)/l(right)
-**** 大小写切换 [M-u][M-l]
-**** 格式化 [M-x j =]
+**** 格式化 [M-m j =]
 **** 代码注释
 ***** 注释当前行 [C-x C-;][M-m c-KEY]
 ***** 行尾添加注释 [M-;]
@@ -100,39 +112,58 @@
 
 *** 变量帮助信息 [C-h v]
 *** 函数帮助信息 [C-h f]
+*** 快捷键帮助信息 [C-h v]
+
+** 自定义优化
+
+** 操作体验优化
+
+*** 使用掌按 Ctrl 键
+*** 使用大拇指侧按 Ctrl-Shift
 
 ** 其他
+
 *** Lisp 交互式解释器 [https://learnxinyminutes.com/docs/elisp/]
 **** 打开 Lisp 交互式解释器 lisp-interaction-mode
 **** 执行代码(光标须在代码尾部) [C-j]
 
 ** TODO
 
-*** emacs 默认快捷键配置文件查看
 *** 快捷键配置 => 尽量向系统常规操作一致
-*** 设置Leader键
-*** C-S-Enter 在上面插入一行
+**** 将当前行往上/下复制
+**** 将当前选区内容往上/下复制
+**** DONE 在当前光标上一行插入空行 C-S-Enter
+**** DONE 在当前光标下一行插入空行 C-Enter
+**** Leader 键
+*** 视觉优化
+**** DONE 配色主题
+***** doom-monokai-octagon
+***** doom-dracula
+**** 去除滚动条
+**** DONE treemacs 样式优化(使用 all-the-icons)
+**** DONE spacemacs 启动页面优化
+***** 更换图标 https://github.com/willbchang/emacs-dragon-icon/tree/main
+***** 图标素材下载 https://icon-icons.com/
+**** DONE 窗口半透明效果(可切换预设透明度 F12)
+*** 操作优化
+**** 格式化问题
+**** 重新打开还原之前的界面 session
+**** 搜索相关 => 文件/项目
+**** 宏
+***** 开始录制 [C-x (]
+***** 结束录制 [C-x )]
+***** 执行宏 [C-x e]
+**** 代码片段 & 代码补全
 *** Org 使用
 **** 导出 PDF (安装 LaTex)
-*** 配色主题
-**** tsdh-dark
-**** monokai
-**** farmhouse-dark
-**** doom-dra
-*** 重新打开还原之前的界面 session
-*** 去除滚动条
-*** 格式化问题
-*** 修复 Flyspell 等插件报错的问题
-*** treemacs 样式优化
-*** spacemacs 启动页面优化
-**** 更换图标 https://github.com/willbchang/emacs-dragon-icon/tree/main
-**** 图标素材下载 https://icon-icons.com/
 *** TODO fork spacemacs 维护自己的定制版本
-*** 搜索相关 => 文件/项目
+*** 修复 Flyspell 等插件报错的问题
 
-M-x all-the-icons-install-fonts
-# raw.githubusercontent.com
-185.199.108.133       raw.githubusercontent.com
-185.199.109.133       raw.githubusercontent.com
-185.199.110.133       raw.githubusercontent.com
-185.199.111.133       raw.githubusercontent.com
+** xxx
+
+# M-x all-the-icons-install-fonts
+# # raw.githubusercontent.com
+# 185.199.108.133       raw.githubusercontent.com
+# 185.199.109.133       raw.githubusercontent.com
+# 185.199.110.133       raw.githubusercontent.com
+# 185.199.111.133       raw.githubusercontent.com
